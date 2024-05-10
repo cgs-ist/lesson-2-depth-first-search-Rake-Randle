@@ -23,15 +23,14 @@ class Cell:
         x, y = self.x * TILE, self.y * TILE
         if self.visited: 
             pygame.draw.rect(sc, pygame.Color('black'), (x, y, TILE, TILE)) 
-
         if self.walls['top']:
-            pygame.draw.line(sc, pygame.Color('darkorange'), (x, y), (x + TILE, y), 3)
+            pygame.draw.line(sc, pygame.Color('red'), (x, y), (x + TILE, y), 3)
         if self.walls['right']:
-            pygame.draw.line(sc, pygame.Color('darkorange'), (x + TILE, y), (x + TILE, y + TILE), 3)
+            pygame.draw.line(sc, pygame.Color('red'), (x + TILE, y), (x + TILE, y + TILE), 3)
         if self.walls['bottom']:
-            pygame.draw.line(sc, pygame.Color('darkorange'), (x + TILE, y + TILE), (x, y + TILE), 3)
+            pygame.draw.line(sc, pygame.Color('red'), (x + TILE, y + TILE), (x, y + TILE), 3)
         if self.walls['left']:
-            pygame.draw.line(sc, pygame.Color('darkorange'), (x, y + TILE), (x, y), 3)
+            pygame.draw.line(sc, pygame.Color('red'), (x, y + TILE), (x, y), 3)
 
     def check_cell(self, x, y):
         find_index = lambda x, y: x + y * cols
@@ -74,7 +73,7 @@ def remove_walls(current, next):
 grid_cells = [Cell(col, row) for row in range(rows) for col in range(cols)]
 current_cell = grid_cells[0]
 stack = []
-colors, color= [], 0
+colors, color = [], 255
 
 while True:
     sc.fill(pygame.Color('darkslategray'))
@@ -86,14 +85,14 @@ while True:
     [cell.draw() for cell in grid_cells]
     current_cell.visited = True
     current_cell.draw_current_cell()
-    [pygame.draw.rect(sc, colors[i], (cell.x * TILE + 5, cell.y * TILE + 5, TILE - 10, TILE - 10), border_radius=20) for i, cell in enumerate(stack)]
+    [pygame.draw.rect(sc, colors[i], (cell.x * TILE + 5, cell.y * TILE + 5, TILE - 10, TILE - 10), border_radius=100) for i, cell in enumerate(stack)]
 
     next_cell = current_cell.check_neighbors()
     if next_cell:
         next_cell.visited = True
         stack.append(current_cell)
         colors.append((color % 255, 0, ((255 - color) % 255)))
-        color += 1
+        color -= 1
         remove_walls(current_cell, next_cell)
         current_cell = next_cell
     elif stack:
